@@ -18,8 +18,9 @@ namespace CommandLine
     {
         private bool disposed;
         private readonly ParserSettings settings;
+        private readonly HelpTextFactory helpTextFactory;
         private static readonly Lazy<Parser> DefaultParser = new Lazy<Parser>(
-            () => new Parser(new ParserSettings { HelpWriter = Console.Error }));
+            () => new Parser(new ParserSettings { HelpWriter = Console.Error }, new HelpTextFactory()));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.Parser"/> class.
@@ -27,6 +28,7 @@ namespace CommandLine
         public Parser()
         {
             settings = new ParserSettings { Consumed = true };
+            helpTextFactory = new HelpTextFactory();
         }
 
         /// <summary>
@@ -42,12 +44,37 @@ namespace CommandLine
             settings = new ParserSettings();
             configuration(settings);
             settings.Consumed = true;
+
+            helpTextFactory = new HelpTextFactory();
         }
 
-        internal Parser(ParserSettings settings)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser"/> class,
+        /// configurable with <see cref="ParserSettings"/> using a delegate.
+        /// </summary>
+        /// <param name="configuration">The <see cref="Action&lt;ParserSettings&gt;"/> delegate used to configure
+        /// aspects and behaviors of the parser.</param>
+        /// <param name="helpTextConfiguration">The <see cref="Action&lt;HelpTextFactory&gt;"/> delegate used to configure
+        /// aspects and behaviors of the help text.</param>
+        public Parser(Action<ParserSettings> configuration, Action<HelpTextFactory> helpTextConfiguration)
+        {
+            if (configuration == null) throw new ArgumentNullException("configuration");
+            if (helpTextConfiguration == null) throw new ArgumentNullException("helpTextConfiguration");
+
+            settings = new ParserSettings();
+            configuration(settings);
+            settings.Consumed = true;
+
+            helpTextFactory = new HelpTextFactory();
+            helpTextConfiguration(helpTextFactory);
+        }
+
+
+        internal Parser(ParserSettings settings, HelpTextFactory factory)
         {
             this.settings = settings;
             this.settings.Consumed = true;
+            this.helpTextFactory = factory;
         }
 
         /// <summary>
@@ -181,19 +208,19 @@ namespace CommandLine
                     settings.EnableDashDash)(arguments, optionSpecs);
         }
 
-        private static ParserResult<T> MakeParserResult<T>(ParserResult<T> parserResult, ParserSettings settings)
+        private ParserResult<T> MakeParserResult<T>(ParserResult<T> parserResult, ParserSettings settings)
         {
             return DisplayHelp(
                 parserResult,
                 settings.HelpWriter);
         }
 
-        private static ParserResult<T> DisplayHelp<T>(ParserResult<T> parserResult, TextWriter helpWriter)
+        private ParserResult<T> DisplayHelp<T>(ParserResult<T> parserResult, TextWriter helpWriter)
         {
             parserResult.WithNotParsed(
                 errors =>
                     Maybe.Merge(errors.ToMaybe(), helpWriter.ToMaybe())
-                        .Do((_, writer) => writer.Write(HelpText.AutoBuild(parserResult)))
+                        .Do((_, writer) => writer.Write(helpTextFactory.Build(parserResult)))
                 );
 
             return parserResult;

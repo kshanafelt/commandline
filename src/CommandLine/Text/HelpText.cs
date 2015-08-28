@@ -143,7 +143,7 @@ namespace CommandLine.Text
         /// <value>The maximum width of the display.</value>
         public int MaximumDisplayWidth
         {
-            get { return maximumDisplayWidth.HasValue ? maximumDisplayWidth.Value : DefaultMaximumLength; }
+            get { return maximumDisplayWidth ?? DefaultMaximumLength; }
             set { maximumDisplayWidth = value; }
         }
 
@@ -181,127 +181,6 @@ namespace CommandLine.Text
         public SentenceBuilder SentenceBuilder
         {
             get { return sentenceBuilder; }
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="CommandLine.Text.HelpText"/> class using common defaults.
-        /// </summary>
-        /// <returns>
-        /// An instance of <see cref="CommandLine.Text.HelpText"/> class.
-        /// </returns>
-        /// <param name='parserResult'>The <see cref="CommandLine.ParserResult{T}"/> containing the instance that collected command line arguments parsed with <see cref="CommandLine.Parser"/> class.</param>
-        /// <param name='onError'>A delegate used to customize the text block of reporting parsing errors text block.</param>
-        /// <param name='onExample'>A delegate used to customize <see cref="CommandLine.Text.Example"/> model used to render text block of usage examples.</param>
-        /// <param name="verbsIndex">If true the output style is consistent with verb commands (no dashes), otherwise it outputs options.</param>
-        /// <remarks>The parameter <paramref name="verbsIndex"/> is not ontly a metter of formatting, it controls whether to handle verbs or options.</remarks>
-        public static HelpText AutoBuild<T>(
-            ParserResult<T> parserResult,
-            Func<HelpText, HelpText> onError,
-            Func<Example, Example> onExample, 
-            bool verbsIndex = false)
-        {
-            var auto = new HelpText {
-                Heading = HeadingInfo.Default,
-                Copyright = CopyrightInfo.Default,
-                AdditionalNewLineAfterOption = true,
-                AddDashesToOption = !verbsIndex
-            };
-
-            var errors = Enumerable.Empty<Error>();
-
-            if (onError != null && parserResult.Tag == ParserResultType.NotParsed)
-            {
-                errors = ((NotParsed<T>)parserResult).Errors;
-
-                if (errors.OnlyMeaningfulOnes().Any())
-                    auto = onError(auto);
-            }
-
-            ReflectionHelper.GetAttribute<AssemblyLicenseAttribute>()
-                .Do(license => license.AddToHelpText(auto, true));
-
-            var usageAttr = ReflectionHelper.GetAttribute<AssemblyUsageAttribute>();
-            var usageLines = HelpText.RenderUsageTextAsLines(parserResult, onExample).ToMaybe();
-
-            if (usageAttr.IsJust() || usageLines.IsJust())
-            {
-                var heading = auto.SentenceBuilder.UsageHeadingText();
-                if (heading.Length > 0)
-                    auto.AddPreOptionsLine(heading);
-            }
-
-            usageAttr.Do(
-                usage => usage.AddToHelpText(auto, true));
-            
-            usageLines.Do(
-                lines => auto.AddPreOptionsLines(lines));
-
-            if ((verbsIndex && parserResult.TypeInfo.Choices.Any())
-                || errors.Any(e => e.Tag == ErrorType.NoVerbSelectedError))
-            {
-                auto.AddDashesToOption = false;
-                auto.AddVerbs(parserResult.TypeInfo.Choices.ToArray());
-            }
-            else
-                auto.AddOptions(parserResult);
-
-            return auto;
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="CommandLine.Text.HelpText"/> class,
-        /// automatically handling verbs or options scenario.
-        /// </summary>
-        /// <param name='parserResult'>The <see cref="CommandLine.ParserResult{T}"/> containing the instance that collected command line arguments parsed with <see cref="CommandLine.Parser"/> class.</param>
-        /// <returns>
-        /// An instance of <see cref="CommandLine.Text.HelpText"/> class.
-        /// </returns>
-        /// <remarks>This feature is meant to be invoked automatically by the parser, setting the HelpWriter property
-        /// of <see cref="CommandLine.ParserSettings"/>.</remarks>
-        public static HelpText AutoBuild<T>(ParserResult<T> parserResult)
-        {
-            if (parserResult.Tag != ParserResultType.NotParsed)
-                throw new ArgumentException("Excepting NotParsed<T> type.", "parserResult");
-
-            var errors = ((NotParsed<T>)parserResult).Errors;
-
-            if (errors.Any(e => e.Tag == ErrorType.VersionRequestedError))
-                return new HelpText(HeadingInfo.Default).AddPreOptionsLine(Environment.NewLine);
-
-            if (!errors.Any(e => e.Tag == ErrorType.HelpVerbRequestedError))
-                return AutoBuild(parserResult, current => DefaultParsingErrorsHandler(parserResult, current), e => e);
-
-            var err = errors.OfType<HelpVerbRequestedError>().Single();
-            var pr = new NotParsed<object>(TypeInfo.Create(err.Type), Enumerable.Empty<Error>());
-            return err.Matched
-                ? AutoBuild(pr, current => DefaultParsingErrorsHandler(pr, current), e => e)
-                : AutoBuild(parserResult, current => DefaultParsingErrorsHandler(parserResult, current), e => e, true);
-        }
-
-        /// <summary>
-        /// Supplies a default parsing error handler implementation.
-        /// </summary>
-        /// <param name='parserResult'>The <see cref="CommandLine.ParserResult{T}"/> containing the instance that collected command line arguments parsed with <see cref="CommandLine.Parser"/> class.</param>
-        /// <param name="current">The <see cref="CommandLine.Text.HelpText"/> instance.</param>
-        public static HelpText DefaultParsingErrorsHandler<T>(ParserResult<T> parserResult, HelpText current)
-        {
-            if (parserResult == null) throw new ArgumentNullException("parserResult");
-            if (current == null) throw new ArgumentNullException("current");
-
-            if (((NotParsed<T>)parserResult).Errors.OnlyMeaningfulOnes().Empty())
-                return current;
-
-            var errors = RenderParsingErrorsTextAsLines(parserResult,
-                current.SentenceBuilder.FormatError,
-                current.SentenceBuilder.FormatMutuallyExclusiveSetErrors,
-                2); // indent with two spaces
-            if (errors.Empty())
-                return current;
-
-            return current
-                .AddPreOptionsLine(
-                    string.Concat(Environment.NewLine, current.SentenceBuilder.ErrorsHeadingText()))
-                .AddPreOptionsLines(errors);
         }
 
         /// <summary>

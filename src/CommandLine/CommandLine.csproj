@@ -133,6 +133,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Text\HelpText.cs" />
+    <Compile Include="Text\HelpTextFactory.cs" />
     <Compile Include="Text\MultiLineTextAttribute.cs">
       <SubType>Code</SubType>
     </Compile>

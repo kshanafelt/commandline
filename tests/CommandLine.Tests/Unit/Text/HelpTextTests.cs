@@ -269,8 +269,10 @@ namespace CommandLine.Tests.Unit.Text
                         new SequenceOutOfRangeError(new NameInfo("i", ""))
                     });
 
+            var factory = new HelpTextFactory();
+
             // Exercize system
-            var helpText = HelpText.AutoBuild(fakeResult);
+            var helpText = factory.Build(fakeResult);
 
             // Verify outcome
             var lines = helpText.ToString().ToNotEmptyLines().TrimStringArray();
@@ -297,8 +299,10 @@ namespace CommandLine.Tests.Unit.Text
                         new HelpVerbRequestedError("commit", typeof(Commit_Verb), true)
                     });
 
+            var factory = new HelpTextFactory();
+
             // Exercize system
-            var helpText = HelpText.AutoBuild(fakeResult);
+            var helpText = factory.Build(fakeResult);
 
             // Verify outcome
             var lines = helpText.ToString().ToNotEmptyLines().TrimStringArray();
@@ -324,8 +328,10 @@ namespace CommandLine.Tests.Unit.Text
                     verbTypes),
                 new Error[] { new HelpVerbRequestedError(null, null, false) });
 
+            var factory = new HelpTextFactory();
+
             // Exercize system
-            var helpText = HelpText.AutoBuild(fakeResult);
+            var helpText = factory.Build(fakeResult);
 
             // Verify outcome
             var lines = helpText.ToString().ToNotEmptyLines().TrimStringArray();
@@ -404,8 +410,10 @@ namespace CommandLine.Tests.Unit.Text
                         new BadFormatTokenError("badtoken")
                     });
 
+            var factory = new HelpTextFactory();
+
             // Exercize system
-            var helpText = HelpText.AutoBuild(fakeResult);
+            var helpText = factory.Build(fakeResult);
 
             // Verify outcome
             var text = helpText.ToString();
@@ -449,9 +457,11 @@ namespace CommandLine.Tests.Unit.Text
                     typeof(Options_With_Default_Set_To_Sequence).ToTypeInfo(),
                     new Error[] { new BadFormatTokenError("badtoken") });
 
+            var factory = new HelpTextFactory();
+
             // Exercize system
             handlers.ChangeCulture();
-            var helpText = HelpText.AutoBuild(fakeResult);
+            var helpText = factory.Build(fakeResult);
             handlers.ResetCulture();
 
             // Verify outcome
