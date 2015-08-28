@@ -6,6 +6,10 @@ using CSharpx;
 
 namespace CommandLine.Text
 {
+    /// <summary>
+    /// HelpTextFactory allows for HelpText customization when the 
+    /// <see cref="Parser.DisplayHelp{T}"/> builds HelpText. 
+    /// </summary>
     public class HelpTextFactory
     {
         private const int DefaultMaximumLength = 78;
@@ -19,11 +23,6 @@ namespace CommandLine.Text
         private SentenceBuilder sentenceBuilder;
         private int? maximumDisplayWidth;
         private bool additionalNewLineAfterOption = true;
-
-        public HelpTextFactory()
-        {
-            AddEnumValuesToHelpText = false;
-        }
 
         /// <summary>
         /// Gets or sets the heading string.
@@ -57,6 +56,9 @@ namespace CommandLine.Text
             }
         }
 
+        /// <summary>
+        /// Prints copyright info as a part of <see cref="BuildHeading"/>.
+        /// </summary>
         public bool AlwaysPrintCopyright { get; set; }
 
         /// <summary>
@@ -86,8 +88,13 @@ namespace CommandLine.Text
         /// <summary>
         /// Gets or sets a value indicating whether the format of options should contain dashes.
         /// It modifies behavior of <see cref="HelpText.AddOptions{T}(ParserResult{T})"/> method.
-        /// <code>null</code> values will use the value given to one of the <see cref="Build{T}"/> methods,
+        /// <code>null</code> values will use the value given to one of the Build methods,
         /// or <code>false</code>, for Build methods that do not take a addDashesToOption parameter.
+        /// <seealso cref="Build{T}(CommandLine.ParserResult{T},System.Func{
+        ///         CommandLine.Text.HelpText,CommandLine.Text.HelpText},
+        ///         System.Func{CommandLine.Text.Example,CommandLine.Text.Example},bool)"/>
+        /// <seealso cref="Build{T}(ParserResult{T})"/>
+        /// <seealso cref="BuildHeading"/>
         /// </summary>
         public bool? AddDashesToOption { get; set; }
 
@@ -193,7 +200,6 @@ namespace CommandLine.Text
 
             var errors = ((NotParsed<T>)parserResult).Errors.ToList();
 
-            // todo fix new HelpText so that it uses a BuildHeader method
             if (errors.Any(e => e.Tag == ErrorType.VersionRequestedError))
                 return BuildHeading();
 
@@ -233,6 +239,12 @@ namespace CommandLine.Text
                 .AddPreOptionsLines(errors);
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CommandLine.Text.HelpText"/> class,
+        /// with only a Heading, if <see cref="AlwaysPrintCopyright"/> is false (the defualt);
+        /// otherwise the HelpText will also have copyright infor.
+        /// </summary>
+        /// <returns></returns>
         public HelpText BuildHeading()
         {
             return AlwaysPrintCopyright? 
