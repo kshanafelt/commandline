@@ -23,6 +23,8 @@ namespace CommandLine.Core
 
     abstract class Specification
     {
+        private static readonly Predicate<object> DefaultIsValid = o => true;
+
         private readonly SpecificationType tag;
         private readonly bool required;
         private readonly Maybe<int> min;
@@ -30,13 +32,15 @@ namespace CommandLine.Core
         private readonly Maybe<object> defaultValue;
         private readonly string helpText;
         private readonly string metaValue;
-        private readonly IEnumerable<string> enumValues;
+        private readonly Predicate<object> isValid;
+        private readonly IEnumerable<string> validValues;
         /// This information is denormalized to decouple Specification from PropertyInfo.
         private readonly Type conversionType;
         private readonly TargetType targetType;
 
         protected Specification(SpecificationType tag, bool required, Maybe<int> min, Maybe<int> max,
-            Maybe<object> defaultValue, string helpText, string metaValue, IEnumerable<string> enumValues,
+            Maybe<object> defaultValue, string helpText, string metaValue, 
+            IEnumerable<string> validValues, Predicate<object> isValid,
             Type conversionType, TargetType targetType)
         {
             this.tag = tag;
@@ -48,7 +52,9 @@ namespace CommandLine.Core
             this.targetType = targetType;
             this.helpText = helpText;
             this.metaValue = metaValue;
-            this.enumValues = enumValues;
+            this.validValues = validValues;
+
+            this.isValid = isValid ?? DefaultIsValid;
         }
 
         public SpecificationType Tag 
@@ -86,9 +92,14 @@ namespace CommandLine.Core
             get { return metaValue; }
         }
 
-        public IEnumerable<string> EnumValues
+        public IEnumerable<string> ValidValues
         {
-            get { return enumValues; }
+            get { return validValues; }
+        }
+
+        public Predicate<object> IsValid
+        {
+            get { return isValid; }
         }
 
         public Type ConversionType

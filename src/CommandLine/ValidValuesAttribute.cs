@@ -1,8 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using CSharpx;
 
@@ -33,6 +31,16 @@ namespace CommandLine
             }
         }
 
+        /// <summary>
+        /// Uses Type to compute valid values. Type must implment either IEnumerable or IValidValues.
+        /// If both are implemented IValidValues is ignored in favor of IEnumerable.
+        /// IEnumerable should be used when there is a (small) fixed set of valid values, in this case, text
+        /// need not be given as the valid values will be computed from that set.
+        /// IValidValues should be used when there is an infinite (or large fixed) set of valid values.
+        /// In this case text should be used to describe these values in a finite way. 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="text"></param>
         public ValidValuesAttribute(Type values, string[] text = null)
         {
             if (values == null)

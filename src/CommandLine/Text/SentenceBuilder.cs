@@ -133,6 +133,12 @@ namespace CommandLine.Text
                                 case ErrorType.RepeatedOptionError:
                                     return "Option '".JoinTo(((RepeatedOptionError)error).NameInfo.NameText,
                                         "' is defined multiple times.");
+                                case ErrorType.NotValidValueError:
+                                    var notValid = ((NotValidValueError)error);
+                                    return notValid.NameInfo.Equals(NameInfo.EmptyName)
+                                               ? "A value not bound to option name is defined with a non-valid value."
+                                               : "Option '".JoinTo(notValid.NameInfo.NameText, "' is defined with a non-valid value.");
+
                             }
                             throw new InvalidOperationException();
                         };

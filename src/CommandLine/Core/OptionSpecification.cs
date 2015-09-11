@@ -38,6 +38,7 @@ namespace CommandLine.Core
                 attribute.Default.ToMaybe(),
                 attribute.HelpText,
                 attribute.MetaValue,
+                // replace this with valid values.
                 enumValues,
                 conversionType,
                 conversionType.ToTargetType());

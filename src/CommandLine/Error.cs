@@ -38,6 +38,10 @@ namespace CommandLine
         /// </summary>
         SequenceOutOfRangeError,
         /// <summary>
+        /// Value of <see cref="CommandLine.NotValidValueError"/> type.
+        /// </summary>
+        NotValidValueError,
+        /// <summary>
         /// Value of <see cref="CommandLine.RepeatedOptionError"/> type.
         /// </summary>
         RepeatedOptionError,
@@ -370,6 +374,17 @@ namespace CommandLine
     {
         internal SequenceOutOfRangeError(NameInfo nameInfo)
             : base(ErrorType.SequenceOutOfRangeError, nameInfo)
+        {
+        }
+    } 
+
+        /// <summary>
+    /// Models an error generated when a sequence value lacks elements.
+    /// </summary>
+    public sealed class NotValidValueError : NamedError
+    {
+        internal NotValidValueError(NameInfo nameInfo)
+            : base(ErrorType.NotValidValueError, nameInfo)
         {
         }
     }
