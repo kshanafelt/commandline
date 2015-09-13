@@ -31,7 +31,8 @@ namespace CommandLine.Core
                 specification.DefaultValue,
                 specification.HelpText,
                 specification.MetaValue,
-                specification.EnumValues,
+                specification.ValidValues,
+                specification.IsValid,
                 specification.ConversionType,
                 specification.TargetType);
         }

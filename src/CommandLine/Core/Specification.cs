@@ -115,13 +115,20 @@ namespace CommandLine.Core
         public static Specification FromProperty(PropertyInfo property)
         {       
             var attrs = property.GetCustomAttributes(true);
+            var vva = attrs.OfType<ValidValuesAttribute>().ToList();
+            var validValuesText = vva.Count() == 1 
+                ? vva.First().Text 
+                : property.PropertyType.IsEnum
+                    ? Enum.GetNames(property.PropertyType)
+                    : Enumerable.Empty<string>();
+
+            var isValid = vva.Count() == 1 ? vva.First().IsValid : DefaultIsValid;
+
             var oa = attrs.OfType<OptionAttribute>();
+            
             if (oa.Count() == 1)
             {
-                var spec = OptionSpecification.FromAttribute(oa.Single(), property.PropertyType,
-                    property.PropertyType.IsEnum
-                        ? Enum.GetNames(property.PropertyType)
-                        : Enumerable.Empty<string>());
+                var spec = OptionSpecification.FromAttribute(oa.Single(), property.PropertyType, validValuesText, isValid);
                 if (spec.ShortName.Length == 0 && spec.LongName.Length == 0)
                 {
                     return spec.WithLongName(property.Name.ToLowerInvariant());
@@ -132,10 +139,7 @@ namespace CommandLine.Core
             var va = attrs.OfType<ValueAttribute>();
             if (va.Count() == 1)
             {
-                return ValueSpecification.FromAttribute(va.Single(), property.PropertyType,
-                    property.PropertyType.IsEnum
-                        ? Enum.GetNames(property.PropertyType)
-                        : Enumerable.Empty<string>());
+                return ValueSpecification.FromAttribute(va.Single(), property.PropertyType, validValuesText, isValid);
             }
 
             throw new InvalidOperationException();

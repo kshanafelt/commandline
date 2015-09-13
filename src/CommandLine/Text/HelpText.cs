@@ -597,8 +597,8 @@ namespace CommandLine.Text
 
             var optionHelpText = specification.HelpText;
 
-            if (AddEnumValuesToHelpText && specification.EnumValues.Any())
-                optionHelpText += " Valid values: " + string.Join(", ", specification.EnumValues);
+            if (AddEnumValuesToHelpText && specification.ValidValues.Any())
+                optionHelpText += " Valid values: " + string.Join(", ", specification.ValidValues);
 
             specification.DefaultValue.Do(
                 defaultValue => optionHelpText = "(Default: {0}) ".FormatInvariant(FormatDefaultValue(defaultValue)) + optionHelpText);

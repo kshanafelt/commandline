@@ -24,7 +24,7 @@ namespace CommandLine.Tests.Unit.Core
             var expectedTokens = new[] { Token.Name("i"), Token.Value("10"), Token.Name("string-seq"),
                 Token.Value("aaa"), Token.Value("bb"),  Token.Value("cccc"), Token.Name("switch") };
             var specs = new[] { new OptionSpecification(string.Empty, "string-seq",
-                false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), ',', null, string.Empty, string.Empty, new List<string>(), typeof(IEnumerable<string>), TargetType.Sequence)};
+                false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), ',', null, string.Empty, string.Empty, new List<string>(), x => true, typeof(IEnumerable<string>), TargetType.Sequence)};
 
             // Exercize system
             var result =
@@ -48,7 +48,7 @@ namespace CommandLine.Tests.Unit.Core
             var expectedTokens = new[] { Token.Name("x"), Token.Name("string-seq"),
                 Token.Value("aaa"), Token.Value("bb"),  Token.Value("cccc"), Token.Name("switch") };
             var specs = new[] { new OptionSpecification(string.Empty, "string-seq",
-                false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), ',', null, string.Empty, string.Empty, new List<string>(), typeof(IEnumerable<string>), TargetType.Sequence)};
+                false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), ',', null, string.Empty, string.Empty, new List<string>(), x => true, typeof(IEnumerable<string>), TargetType.Sequence)};
 
             // Exercize system
             var result =
