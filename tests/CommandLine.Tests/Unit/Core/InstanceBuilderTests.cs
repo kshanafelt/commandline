@@ -257,6 +257,43 @@ namespace CommandLine.Tests.Unit.Core
             // Teardown
         }
 
+        [Theory]
+        [InlineData(new[] { "--colors", "Red" }, Colors.Red)]
+        [InlineData(new[] { "--colors", "Blue" }, Colors.Blue)]
+        [InlineData(new[] { "--colors", "0" }, Colors.Red)]
+        [InlineData(new[] { "--colors", "2" }, Colors.Blue)]
+        public void Parse_valid_enum_value(string[] arguments, Colors expected)
+        {
+            // Fixture setup in attribute
+
+            // Exercize system 
+            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(
+                arguments);
+
+            // Verify outcome
+            expected.ShouldBeEquivalentTo(((Parsed<Simple_Valid_Values_With_Enum>)result).Value.Colors);
+
+            // Teardown
+        }
+
+        [Theory]
+        [InlineData(new[] { "--colors", "Green" }, Colors.Green)]
+        [InlineData(new[] { "--colors", "1" }, Colors.Green)]
+        public void Parse_valid_enum_value_with_invalid_values(string[] arguments, Colors expected)
+        {
+            /// Fixture setup
+            var expectedResult = new[] { new NotValidValueError(new NameInfo("", "colors")) };
+
+            // Exercize system 
+            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(
+                arguments);
+
+            // Verify outcome
+            ((NotParsed<Simple_Valid_Values_With_Enum>)result).Errors.ShouldBeEquivalentTo(expectedResult);
+
+            // Teardown
+        }
+
         [Fact]
         public void Parse_enum_value_with_wrong_index_generates_BadFormatConversionError()
         {

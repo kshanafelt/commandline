@@ -32,7 +32,7 @@ namespace CommandLine.Core
                     from sp in specProps
                     where sp.Specification.TargetType == TargetType.Scalar
                     where sp.Value.IsJust()
-                    where !sp.Specification.IsValid(sp.Value)
+                    where !sp.Specification.IsValid(sp.Value.FromJust())
                     select sp.Specification;
 
                 options.Concat(

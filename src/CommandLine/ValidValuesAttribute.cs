@@ -7,29 +7,13 @@ using CSharpx;
 namespace CommandLine
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    class ValidValuesAttribute : Attribute
+    class ValidValuesAttribute: Attribute
     {
         private readonly Maybe<IEnumerable<string>> text;
         private readonly Predicate<object> isValid; 
 
         public Predicate<object> IsValid { get { return isValid; } }
         public IEnumerable<string> Text { get { return text.IsNothing()? new string[0] : text.FromJust(); } }
-
-        public ValidValuesAttribute(object[] values, string[] text = null)
-        {
-            if (values == null)
-            {
-                throw new ArgumentNullException("values");
-            }
-
-            this.text = ((IEnumerable<string>)text).ToMaybe();
-            isValid = GetPredicateFrom(values);
-
-            if (this.text.IsNothing())
-            {
-                this.text = GetMaybeEnumerableFrom(values);
-            }
-        }
 
         /// <summary>
         /// Uses Type to compute valid values. Type must implment either IEnumerable or IValidValues.
@@ -40,21 +24,20 @@ namespace CommandLine
         /// In this case text should be used to describe these values in a finite way. 
         /// </summary>
         /// <param name="values"></param>
-        /// <param name="text"></param>
-        public ValidValuesAttribute(Type values, string[] text = null)
+        public ValidValuesAttribute(Type values)
         {
             if (values == null)
             {
                throw new ArgumentNullException("values");    
             }
 
-            var isAssignableFromIEnumerable = IsAssignable<IEnumerable>(values);
-            if (!(isAssignableFromIEnumerable || IsAssignable<IValidValues>(values)))
+            if (!(IsAssignable<IEnumerable>(values) || IsAssignable<IValidValues>(values)))
             {
                 throw new ArgumentException(string.Format("value must be assinable from {0} or {1}.", typeof(IEnumerable), typeof(IValidValues)), "values");
             }
 
-            this.text = ((IEnumerable<string>)text).ToMaybe();
+            var vvt = values.GetCustomAttributes(typeof(ValidValuesTextAttribute), false).OfType<ValidValuesTextAttribute>();
+            text = vvt.Any() ? ((IEnumerable<string>)vvt.FirstOrDefault().text).ToMaybe() : Maybe.Nothing<IEnumerable<string>>();
 
             var valuesObj = Activator.CreateInstance(values);
             var validValues = valuesObj as IValidValues;
@@ -73,9 +56,9 @@ namespace CommandLine
             var valuesList = tempValues.Cast<object>().ToList();
             isValid = GetPredicateFrom(valuesList.ToSet());
 
-            if (this.text.IsNothing())
+            if (text.IsNothing())
             {
-                this.text = GetMaybeEnumerableFrom(valuesList);
+                text = GetMaybeEnumerableFrom(valuesList);
             }
         }
 
@@ -99,6 +82,18 @@ namespace CommandLine
             var type = typeof (T);
             return type.IsAssignableFrom(value);
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class ValidValuesTextAttribute : Attribute
+    {
+        public string[] text { get; private set; }
+
+        public ValidValuesTextAttribute(string[] text)
+        {
+            this.text = text;
+        }
+
     }
 
     public interface IValidValues
