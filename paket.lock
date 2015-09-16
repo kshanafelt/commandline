@@ -1,7 +1,7 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
-    FAKE (4.3.4)
+    FAKE (4.4.1)
     FluentAssertions (4.0.0)
       System.Collections (>= 4.0.10)
       System.Diagnostics.Debug (>= 4.0.10)
@@ -21,13 +21,13 @@ NUGET
       System.Xml.XDocument (>= 4.0.10)
     FsCheck (2.0.7)
       FSharp.Core (>= 3.1.2.5)
-    FSharp.Compiler.Service (1.4.0.1)
+    FSharp.Compiler.Service (0.0.90)
     FSharp.Core (4.0.0.1)
-    FSharp.Formatting (2.10.0)
-      FSharp.Compiler.Service (>= 0.0.87)
-      FSharpVSPowerTools.Core (1.8.0)
-    FSharpVSPowerTools.Core (1.8.0)
-      FSharp.Compiler.Service (>= 0.0.87)
+    FSharp.Formatting (2.10.3)
+      FSharp.Compiler.Service (>= 0.0.90 <= 1.3)
+      FSharpVSPowerTools.Core (1.9.0)
+    FSharpVSPowerTools.Core (1.9.0)
+      FSharp.Compiler.Service (>= 0.0.90)
     System.Collections (4.0.10)
       System.Diagnostics.Debug (>= 4.0.0) - framework: dnxcore50
       System.Resources.ResourceManager (>= 4.0.0) - framework: dnxcore50
@@ -232,7 +232,7 @@ NUGET
     xunit.extensibility.core (2.0.0)
       xunit.abstractions (2.0.0)
     xunit.runner.console (2.0.0)
-    xunit.runner.visualstudio (2.0.1)
+    xunit.runner.visualstudio (2.0.1) - version_in_path: true
 GITHUB
   remote: gsscoder/CSharpx
   specs:

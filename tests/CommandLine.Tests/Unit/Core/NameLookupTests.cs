@@ -36,7 +36,7 @@ namespace CommandLine.Tests.Unit.Core
 
             // Fixture setup
             var expected = new NameInfo(ShortName, LongName);
-            var spec = new OptionSpecification(ShortName, LongName, false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), '.', null, string.Empty, string.Empty, new List<string>(), typeof(IEnumerable<string>), TargetType.Sequence);
+            var spec = new OptionSpecification(ShortName, LongName, false, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(), '.', null, string.Empty, string.Empty, new List<string>(),  x => true, typeof(IEnumerable<string>), TargetType.Sequence);
 
             // Exercize system
             var result = spec.FromOptionSpecification();
