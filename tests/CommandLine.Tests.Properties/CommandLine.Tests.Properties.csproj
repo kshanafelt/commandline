@@ -1,23 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" />
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0A15C4D2-B3E9-43AB-8155-1B39F7AC8A5E}</ProjectGuid>
+    <ProjectGuid>{A917F20D-FC6D-4EB1-BDF0-F6C71300C5BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CommandLine.Tests</RootNamespace>
-    <AssemblyName>CommandLine.Tests</AssemblyName>
+    <RootNamespace>CommandLine.Tests.Properties</RootNamespace>
+    <AssemblyName>CommandLine.Tests.Properties</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>f62f3018</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,13 +28,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\CommandLine.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -51,81 +36,20 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\src\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CultureInfoExtensions.cs" />
-    <Compile Include="Fakes\Options_With_Default_Set_To_Sequence.cs" />
-    <Compile Include="Fakes\Options_With_SetName_That_Ends_With_Previous_SetName.cs" />
-    <Compile Include="Fakes\Options_With_Uri_And_SimpleType.cs" />
-    <Compile Include="Fakes\Options_With_Switches.cs" />
-    <Compile Include="Fakes\Options_With_Two_Option_Required_Set_To_True_And_Two_Sets.cs" />
-    <Compile Include="Fakes\Options_With_HelpText_And_MetaValue.cs" />
-    <Compile Include="Fakes\Options_With_Interface.cs" />
-    <Compile Include="Fakes\Immutable_Simple_Options.cs" />
-    <Compile Include="Fakes\Options_With_FSharpOption.cs" />
-    <Compile Include="Fakes\Options_With_Enum_Having_HelpText.cs" />
-    <Compile Include="Fakes\Simple_Options_With_Double_Value.cs" />
-    <Compile Include="Fakes\Simple_Options_With_Enum.cs" />
-    <Compile Include="Fakes\Options_With_Both_Min_And_Max_Set_To_Zero.cs" />
-    <Compile Include="Fakes\Options_With_MetaValue.cs" />
-    <Compile Include="Fakes\Options_With_Max_Set_To_Zero.cs" />
-    <Compile Include="Fakes\Options_With_Min_Set_To_Zero.cs" />
-    <Compile Include="Fakes\Options_With_Nullables.cs" />
-    <Compile Include="Fakes\Options_With_Scalar_Value_And_Adjacent_SequenceString.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_Having_Both_Min_And_Max_Equal.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_And_Only_Max_Constraint.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_And_Only_Max_Constraint_For_Value.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_And_Only_Min_Constraint_For_Value.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_And_Only_Min_Constraint.cs" />
-    <Compile Include="Fakes\Options_With_Sequence.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_Having_Separator_Set.cs" />
-    <Compile Include="Fakes\Options_With_Sequence_Without_Range_For_Value.cs" />
-    <Compile Include="Fakes\Options_With_Named_And_Empty_Sets.cs" />
-    <Compile Include="Fakes\Options_With_Two_Sets.cs" />
-    <Compile Include="Fakes\Simple_Options_With_Values.cs" />
-    <Compile Include="Fakes\Simple_Options.cs" />
-    <Compile Include="Fakes\Options_With_Required_Set_To_True_For_Values.cs" />
-    <Compile Include="Fakes\Options_With_Two_Options_Having_Required_Set_To_True.cs" />
-    <Compile Include="Fakes\Options_With_Required_Set_To_True.cs" />
-    <Compile Include="Fakes\Options_With_Required_Set_To_True_Within_Same_Set.cs" />
-    <Compile Include="Fakes\Help_Fakes.cs" />
-    <Compile Include="Fakes\IInterface_With_Two_Scalar_Options.cs" />
-    <Compile Include="Fakes\Immutable_Verb_Fakes.cs" />
-    <Compile Include="Fakes\Verb_Fakes.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="Unit\Core\InstanceChooserTests.cs" />
-    <Compile Include="Unit\Core\KeyValuePairHelperTests.cs" />
-    <Compile Include="Unit\Core\OptionMapperTests.cs" />
-    <Compile Include="Unit\Core\InstanceBuilderTests.cs" />
+    <Compile Include="Fakes\Scalar_String_Mutable.cs" />
+    <Compile Include="ParserProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit\Core\NameLookupTests.cs" />
-    <Compile Include="Unit\Core\SequenceTests.cs" />
-    <Compile Include="Unit\Core\ScalarTests.cs" />
-    <Compile Include="Unit\Core\SwitchTests.cs" />
-    <Compile Include="Unit\Core\TokenizerTests.cs" />
-    <Compile Include="Unit\Core\TokenPartitionerTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Unit\Core\TokenTests.cs" />
-    <Compile Include="Unit\Infrastructure\FSharpOptionHelperTests.cs" />
-    <Compile Include="Unit\Core\ReflectionExtensions.cs" />
-    <Compile Include="Unit\ParserResultExtensionsTests.cs" />
-    <Compile Include="Unit\ParserTests.cs" />
-    <Compile Include="Unit\Text\HelpTextTests.cs" />
-    <Compile Include="Unit\UnParserExtensionsTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\CommandLine\CommandLine.csproj">
-      <Project>{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}</Project>
+      <Project>{e1bd3c65-49c3-49e7-baba-c60980cb3f20}</Project>
       <Name>CommandLine</Name>
     </ProjectReference>
   </ItemGroup>
@@ -135,6 +59,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
@@ -241,6 +167,44 @@
         </Reference>
         <Reference Include="FluentAssertions">
           <HintPath>..\..\packages\FluentAssertions\lib\portable-win81+wpa81\FluentAssertions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETCore') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile44')">
+      <ItemGroup>
+        <Reference Include="FsCheck">
+          <HintPath>..\..\packages\FsCheck\lib\portable-net45+netcore45\FsCheck.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
+      <ItemGroup>
+        <Reference Include="FsCheck">
+          <HintPath>..\..\packages\FsCheck\lib\net45\FsCheck.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhone' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1')) Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78')">
+      <ItemGroup>
+        <Reference Include="FsCheck">
+          <HintPath>..\..\packages\FsCheck\lib\portable-net45+netcore45+wp8\FsCheck.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhoneApp') Or ($(TargetFrameworkProfile) == 'Profile32') Or ($(TargetFrameworkProfile) == 'Profile84') Or ($(TargetFrameworkProfile) == 'Profile111') Or ($(TargetFrameworkProfile) == 'Profile151') Or ($(TargetFrameworkProfile) == 'Profile157') Or ($(TargetFrameworkProfile) == 'Profile259')">
+      <ItemGroup>
+        <Reference Include="FsCheck">
+          <HintPath>..\..\packages\FsCheck\lib\portable-net45+netcore45+wpa81+wp8\FsCheck.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
