@@ -267,8 +267,7 @@ namespace CommandLine.Tests.Unit.Core
             // Fixture setup in attribute
 
             // Exercize system 
-            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(
-                arguments);
+            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(arguments);
 
             // Verify outcome
             expected.ShouldBeEquivalentTo(((Parsed<Simple_Valid_Values_With_Enum>)result).Value.Colors);
@@ -285,8 +284,7 @@ namespace CommandLine.Tests.Unit.Core
             var expectedResult = new[] { new NotValidValueError(new NameInfo("", "colors")) };
 
             // Exercize system 
-            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(
-                arguments);
+            var result = InvokeBuild<Simple_Valid_Values_With_Enum>(arguments);
 
             // Verify outcome
             ((NotParsed<Simple_Valid_Values_With_Enum>)result).Errors.ShouldBeEquivalentTo(expectedResult);

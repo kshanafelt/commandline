@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CommandLine.Tests.Fakes
 {
@@ -29,10 +30,11 @@ namespace CommandLine.Tests.Fakes
 
     class ValidColors : IEnumerable<Colors>
     {
+        private readonly IEnumerable<Colors> validColors = new[] { Colors.Red, Colors.Blue };
+
         public IEnumerator<Colors> GetEnumerator()
         {
-            yield return Colors.Red;
-            yield return Colors.Blue;
+            return validColors.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

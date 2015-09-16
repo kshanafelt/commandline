@@ -36,10 +36,13 @@ namespace CommandLine
                 throw new ArgumentException(string.Format("value must be assinable from {0} or {1}.", typeof(IEnumerable), typeof(IValidValues)), "values");
             }
 
-            var vvt = values.GetCustomAttributes(typeof(ValidValuesTextAttribute), false).OfType<ValidValuesTextAttribute>();
-            text = vvt.Any() ? ((IEnumerable<string>)vvt.FirstOrDefault().text).ToMaybe() : Maybe.Nothing<IEnumerable<string>>();
-
             var valuesObj = Activator.CreateInstance(values);
+            var validText = valuesObj as IValidValuesText;
+            if (validText != null)
+            {
+                text = validText.ValidValues().ToMaybe();
+            }
+
             var validValues = valuesObj as IValidValues;
             if (validValues != null)
             {
@@ -84,19 +87,12 @@ namespace CommandLine
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class ValidValuesTextAttribute : Attribute
-    {
-        public string[] text { get; private set; }
-
-        public ValidValuesTextAttribute(string[] text)
-        {
-            this.text = text;
-        }
-
+    public interface IValidValuesText
+    { 
+        IEnumerable<string> ValidValues();
     }
 
-    public interface IValidValues
+    public interface IValidValues : IValidValuesText
     {
         bool IsValid(object value);
     }
