@@ -38,10 +38,7 @@ namespace CommandLine
 
             var valuesObj = Activator.CreateInstance(values);
             var validText = valuesObj as IValidValuesText;
-            if (validText != null)
-            {
-                text = validText.ValidValues().ToMaybe();
-            }
+            text = validText != null ? validText.ValidValues().ToMaybe() : Maybe.Nothing<IEnumerable<string>>();
 
             var validValues = valuesObj as IValidValues;
             if (validValues != null)
