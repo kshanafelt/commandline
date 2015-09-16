@@ -23,6 +23,8 @@ namespace CommandLine.Core
 
     abstract class Specification
     {
+        private static readonly Predicate<object> DefaultIsValid = o => true;
+
         private readonly SpecificationType tag;
         private readonly bool required;
         private readonly Maybe<int> min;
@@ -30,13 +32,15 @@ namespace CommandLine.Core
         private readonly Maybe<object> defaultValue;
         private readonly string helpText;
         private readonly string metaValue;
-        private readonly IEnumerable<string> enumValues;
+        private readonly Predicate<object> isValid;
+        private readonly IEnumerable<string> validValues;
         /// This information is denormalized to decouple Specification from PropertyInfo.
         private readonly Type conversionType;
         private readonly TargetType targetType;
 
         protected Specification(SpecificationType tag, bool required, Maybe<int> min, Maybe<int> max,
-            Maybe<object> defaultValue, string helpText, string metaValue, IEnumerable<string> enumValues,
+            Maybe<object> defaultValue, string helpText, string metaValue, 
+            IEnumerable<string> validValues, Predicate<object> isValid,
             Type conversionType, TargetType targetType)
         {
             this.tag = tag;
@@ -48,7 +52,9 @@ namespace CommandLine.Core
             this.targetType = targetType;
             this.helpText = helpText;
             this.metaValue = metaValue;
-            this.enumValues = enumValues;
+            this.validValues = validValues;
+
+            this.isValid = isValid ?? DefaultIsValid;
         }
 
         public SpecificationType Tag 
@@ -86,9 +92,14 @@ namespace CommandLine.Core
             get { return metaValue; }
         }
 
-        public IEnumerable<string> EnumValues
+        public IEnumerable<string> ValidValues
         {
-            get { return enumValues; }
+            get { return validValues; }
+        }
+
+        public Predicate<object> IsValid
+        {
+            get { return isValid; }
         }
 
         public Type ConversionType
@@ -104,13 +115,20 @@ namespace CommandLine.Core
         public static Specification FromProperty(PropertyInfo property)
         {       
             var attrs = property.GetCustomAttributes(true);
+            var vva = attrs.OfType<ValidValuesAttribute>().ToList();
+            var validValuesText = vva.Count() == 1 
+                ? vva.First().Text 
+                : property.PropertyType.IsEnum
+                    ? Enum.GetNames(property.PropertyType)
+                    : Enumerable.Empty<string>();
+
+            var isValid = vva.Count() == 1 ? vva.First().IsValid : DefaultIsValid;
+
             var oa = attrs.OfType<OptionAttribute>();
+            
             if (oa.Count() == 1)
             {
-                var spec = OptionSpecification.FromAttribute(oa.Single(), property.PropertyType,
-                    property.PropertyType.IsEnum
-                        ? Enum.GetNames(property.PropertyType)
-                        : Enumerable.Empty<string>());
+                var spec = OptionSpecification.FromAttribute(oa.Single(), property.PropertyType, validValuesText, isValid);
                 if (spec.ShortName.Length == 0 && spec.LongName.Length == 0)
                 {
                     return spec.WithLongName(property.Name.ToLowerInvariant());
@@ -121,10 +139,7 @@ namespace CommandLine.Core
             var va = attrs.OfType<ValueAttribute>();
             if (va.Count() == 1)
             {
-                return ValueSpecification.FromAttribute(va.Single(), property.PropertyType,
-                    property.PropertyType.IsEnum
-                        ? Enum.GetNames(property.PropertyType)
-                        : Enumerable.Empty<string>());
+                return ValueSpecification.FromAttribute(va.Single(), property.PropertyType, validValuesText, isValid);
             }
 
             throw new InvalidOperationException();

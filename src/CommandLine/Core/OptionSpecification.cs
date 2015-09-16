@@ -15,9 +15,9 @@ namespace CommandLine.Core
         private readonly string setName;
 
         public OptionSpecification(string shortName, string longName, bool required, string setName, Maybe<int> min, Maybe<int> max,
-            char separator, Maybe<object> defaultValue, string helpText, string metaValue, IEnumerable<string> enumValues,
+            char separator, Maybe<object> defaultValue, string helpText, string metaValue, IEnumerable<string> validValues, Predicate<object> isValid,
             Type conversionType, TargetType targetType)
-            : base(SpecificationType.Option, required, min, max, defaultValue, helpText, metaValue, enumValues, conversionType, targetType)
+            : base(SpecificationType.Option, required, min, max, defaultValue, helpText, metaValue, validValues, isValid, conversionType, targetType)
         {
             this.shortName = shortName;
             this.longName = longName;
@@ -25,7 +25,7 @@ namespace CommandLine.Core
             this.setName = setName;
         }
 
-        public static OptionSpecification FromAttribute(OptionAttribute attribute, Type conversionType, IEnumerable<string> enumValues)
+        public static OptionSpecification FromAttribute(OptionAttribute attribute, Type conversionType, IEnumerable<string> validValues, Predicate<object> isValid)
         {
             return new OptionSpecification(
                 attribute.ShortName,
@@ -38,7 +38,8 @@ namespace CommandLine.Core
                 attribute.Default.ToMaybe(),
                 attribute.HelpText,
                 attribute.MetaValue,
-                enumValues,
+                validValues,
+                isValid,
                 conversionType,
                 conversionType.ToTargetType());
         }
@@ -46,7 +47,7 @@ namespace CommandLine.Core
         public static OptionSpecification NewSwitch(string shortName, string longName, bool required, string helpText, string metaValue)
         {
             return new OptionSpecification(shortName, longName, required, string.Empty, Maybe.Nothing<int>(), Maybe.Nothing<int>(),
-                '\0', Maybe.Nothing<object>(), helpText, metaValue, Enumerable.Empty<string>(), typeof(bool), TargetType.Switch);
+                '\0', Maybe.Nothing<object>(), helpText, metaValue, Enumerable.Empty<string>(), x => true, typeof(bool), TargetType.Switch);
         }
 
         public string ShortName

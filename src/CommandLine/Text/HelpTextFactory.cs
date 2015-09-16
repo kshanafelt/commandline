@@ -84,7 +84,7 @@ namespace CommandLine.Text
             get { return maximumDisplayWidth ?? DefaultMaximumLength; }
             set { maximumDisplayWidth = value; }
         }
-
+        
         /// <summary>
         /// Gets or sets a value indicating whether the format of options should contain dashes.
         /// It modifies behavior of <see cref="HelpText.AddOptions{T}(ParserResult{T})"/> method.
@@ -96,7 +96,8 @@ namespace CommandLine.Text
         /// <seealso cref="Build{T}(ParserResult{T})"/>
         /// <seealso cref="BuildHeading"/>
         /// </summary>
-        public bool? AddDashesToOption { get; set; }
+        public bool? AddDashesToOption { get; set;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether to add an additional line after the description of the specification.

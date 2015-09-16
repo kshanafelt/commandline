@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using CSharpx;
 
 namespace CommandLine.Core
@@ -18,8 +19,38 @@ namespace CommandLine.Core
                     EnforceMutuallyExclusiveSet(),
                     EnforceRequired(),
                     EnforceRange(),
-                    EnforceSingle(tokens)
+                    EnforceSingle(tokens),
+                    EnforceValidValue()
                 };
+        }
+
+        private static Func<IEnumerable<SpecificationProperty>, IEnumerable<Error>> EnforceValidValue()
+        {
+            return specProps =>
+            {
+                var options =
+                    from sp in specProps
+                    where sp.Specification.TargetType == TargetType.Scalar
+                    where sp.Value.IsJust()
+                    where !sp.Specification.IsValid(sp.Value.FromJust())
+                    select sp.Specification;
+
+                options.Concat(
+                    from sp in specProps
+                    where sp.Specification.TargetType == TargetType.Sequence
+                    where sp.Value.IsJust()
+                    where ((IEnumerable<object>)sp.Value.FromJustOrFail()).Any(v => !sp.Specification.IsValid(v))
+                    select sp.Specification
+                    );
+
+                if (options.Any())
+                {
+                    return
+                        from o in options
+                        select new NotValidValueError(o.FromSpecification());
+                }
+                return Enumerable.Empty<Error>();
+            };
         }
 
         private static Func<IEnumerable<SpecificationProperty>, IEnumerable<Error>> EnforceMutuallyExclusiveSet()

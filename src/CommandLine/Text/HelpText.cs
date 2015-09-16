@@ -26,10 +26,7 @@ namespace CommandLine.Text
         private int? maximumDisplayWidth;
         private string heading;
         private string copyright;
-        private bool additionalNewLineAfterOption;
         private StringBuilder optionsHelp;
-        private bool addDashesToOption;
-        private bool addEnumValuesToHelpText;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.Text.HelpText"/> class.
@@ -151,29 +148,17 @@ namespace CommandLine.Text
         /// Gets or sets a value indicating whether the format of options should contain dashes.
         /// It modifies behavior of <see cref="AddOptions{T}(ParserResult{T})"/> method.
         /// </summary>
-        public bool AddDashesToOption
-        {
-            get { return addDashesToOption; }
-            set { addDashesToOption = value; }
-        }
+        public bool AddDashesToOption { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to add an additional line after the description of the specification.
         /// </summary>
-        public bool AdditionalNewLineAfterOption
-        {
-            get { return additionalNewLineAfterOption; }
-            set { additionalNewLineAfterOption = value; }
-        }
+        public bool AdditionalNewLineAfterOption { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to add the values of an enum after the description of the specification.
         /// </summary>
-        public bool AddEnumValuesToHelpText
-        {
-            get { return addEnumValuesToHelpText; }
-            set { addEnumValuesToHelpText = value; }
-        }
+        public bool AddEnumValuesToHelpText { get; set; }
 
         /// <summary>
         /// Gets the <see cref="SentenceBuilder"/> instance specified in constructor.
@@ -612,8 +597,8 @@ namespace CommandLine.Text
 
             var optionHelpText = specification.HelpText;
 
-            if (addEnumValuesToHelpText && specification.EnumValues.Any())
-                optionHelpText += " Valid values: " + string.Join(", ", specification.EnumValues);
+            if (AddEnumValuesToHelpText && specification.ValidValues.Any())
+                optionHelpText += " Valid values: " + string.Join(", ", specification.ValidValues);
 
             specification.DefaultValue.Do(
                 defaultValue => optionHelpText = "(Default: {0}) ".FormatInvariant(FormatDefaultValue(defaultValue)) + optionHelpText);
@@ -659,7 +644,7 @@ namespace CommandLine.Text
             optionsHelp
                 .Append(optionHelpText)
                 .Append(Environment.NewLine)
-                .AppendWhen(additionalNewLineAfterOption, Environment.NewLine);
+                .AppendWhen(AdditionalNewLineAfterOption, Environment.NewLine);
 
             return this;
         }
@@ -671,14 +656,14 @@ namespace CommandLine.Text
                     .MapIf(
                         specification.ShortName.Length > 0,
                         it => it
-                            .AppendWhen(addDashesToOption, '-')
+                            .AppendWhen(AddDashesToOption, '-')
                             .AppendFormat("{0}", specification.ShortName)
                             .AppendFormatWhen(specification.MetaValue.Length > 0, " {0}", specification.MetaValue)
                             .AppendWhen(specification.LongName.Length > 0, ", "))
                     .MapIf(
                         specification.LongName.Length > 0,
                         it => it
-                            .AppendWhen(addDashesToOption, "--")
+                            .AppendWhen(AddDashesToOption, "--")
                             .AppendFormat("{0}", specification.LongName)
                             .AppendFormatWhen(specification.MetaValue.Length > 0, "={0}", specification.MetaValue))
                     .ToString();

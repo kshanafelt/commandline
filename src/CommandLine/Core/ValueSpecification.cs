@@ -12,15 +12,15 @@ namespace CommandLine.Core
         private readonly string metaName;
 
         public ValueSpecification(int index, string metaName, bool required, Maybe<int> min, Maybe<int> max, Maybe<object> defaultValue,
-            string helpText, string metaValue, IEnumerable<string> enumValues,
+            string helpText, string metaValue, IEnumerable<string> validValues, Predicate<object> isValid,
             Type conversionType, TargetType targetType)
-            : base(SpecificationType.Value, required, min, max, defaultValue, helpText, metaValue, enumValues, conversionType, targetType)
+            : base(SpecificationType.Value, required, min, max, defaultValue, helpText, metaValue, validValues, isValid, conversionType, targetType)
         {
             this.index = index;
             this.metaName = metaName;
         }
 
-        public static ValueSpecification FromAttribute(ValueAttribute attribute, Type conversionType, IEnumerable<string> enumValues)
+        public static ValueSpecification FromAttribute(ValueAttribute attribute, Type conversionType, IEnumerable<string> validValues, Predicate<object> isValid)
         {
             return new ValueSpecification(
                 attribute.Index,
@@ -31,7 +31,9 @@ namespace CommandLine.Core
                 attribute.Default.ToMaybe(),
                 attribute.HelpText,
                 attribute.MetaValue,
-                enumValues,
+                // replace this with valid values.
+                validValues,
+                isValid,
                 conversionType,
                 conversionType.ToTargetType());
         }

@@ -141,6 +141,7 @@
     <Compile Include="Infrastructure\StringBuilderExtensions.cs" />
     <Compile Include="Text\UsageAttribute.cs" />
     <Compile Include="UnParserExtensions.cs" />
+    <Compile Include="ValidValuesAttribute.cs" />
     <Compile Include="ValueAttribute.cs" />
     <Compile Include="VerbAttribute.cs" />
   </ItemGroup>
