@@ -21,8 +21,13 @@ namespace CommandLine.Tests.Properties
                 x =>
                 {
                     var value = x.Get;
+                    if (value.StartsWith("-"))
+                    {
+                        return false;
+                    }
                     var result = Sut.ParseArguments<Scalar_String_Mutable>(new[] { "--stringvalue", value });
                     ((Parsed<Scalar_String_Mutable>)result).Value.StringValue.ShouldBeEquivalentTo(value);
+                    return true;
                 }).QuickCheckThrowOnFailure();
         }
     }
