@@ -12,7 +12,7 @@ namespace CommandLine.Text
     /// </summary>
     public class HelpTextFactory
     {
-        private const int DefaultMaximumLength = 78;
+        private const int DefaultMaximumLength = 80;
 
         private static readonly Lazy<HeadingInfo> HeadingDefault = new Lazy<HeadingInfo>(() => HeadingInfo.Default);
         private static readonly Lazy<CopyrightInfo> CopyrightDefault = new Lazy<CopyrightInfo>(() => CopyrightInfo.Default);
@@ -81,7 +81,7 @@ namespace CommandLine.Text
         /// <value>The maximum width of the display.</value>
         public int MaximumDisplayWidth
         {
-            get { return maximumDisplayWidth ?? DefaultMaximumLength; }
+            get { return maximumDisplayWidth ?? (int)(maximumDisplayWidth = DefaultMaximumLength); }
             set { maximumDisplayWidth = value; }
         }
         
@@ -96,8 +96,7 @@ namespace CommandLine.Text
         /// <seealso cref="Build{T}(ParserResult{T})"/>
         /// <seealso cref="BuildHeading"/>
         /// </summary>
-        public bool? AddDashesToOption { get; set;
-        }
+        public bool? AddDashesToOption { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to add an additional line after the description of the specification.
@@ -133,10 +132,13 @@ namespace CommandLine.Text
         {
             var auto = new HelpText
             {
-                Heading = HeadingInfo.Default,
-                Copyright = CopyrightInfo.Default,
-                AdditionalNewLineAfterOption = true,
-                AddDashesToOption = !verbsIndex
+                Heading = Heading,
+                Copyright = Copyright,
+                AdditionalNewLineAfterOption = AdditionalNewLineAfterOption,
+                AddDashesToOption = AddDashesToOption?? !verbsIndex,
+                AddEnumValuesToHelpText = AddEnumValuesToHelpText,
+                MaximumDisplayWidth = MaximumDisplayWidth,
+
             };
 
             IList<Error> errors;
